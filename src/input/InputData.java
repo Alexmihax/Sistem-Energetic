@@ -1,16 +1,14 @@
 package input;
 
-import entities.Consumer;
-import entities.Distributor;
-
 import java.util.List;
 
-public class Input {
+public final class InputData {
     private final int numberOfTurns;
-    private final List<Consumer> consumers;
-    private final List<Distributor> distributors;
+    private final List<EntityInput> consumers;
+    private final List<EntityInput> distributors;
     private final List<MonthlyInputData> updates;
-    public Input(int numberOfTurns, List<Consumer> consumers, List<Distributor> distributors, List<MonthlyInputData> updates) {
+    public InputData(final int numberOfTurns, final List<EntityInput> consumers,
+                     final List<EntityInput> distributors, final  List<MonthlyInputData> updates) {
         this.numberOfTurns = numberOfTurns;
         this.distributors = distributors;
         this.consumers = consumers;
@@ -21,15 +19,16 @@ public class Input {
         return numberOfTurns;
     }
 
-    public List<Consumer> getConsumers() {
+    public List<EntityInput> getConsumers() {
         return consumers;
     }
 
-    public List<Distributor> getDistributors() {
+    public List<EntityInput> getDistributors() {
         return distributors;
     }
 
     public List<MonthlyInputData> getUpdates() {
         return updates;
     }
+
 }

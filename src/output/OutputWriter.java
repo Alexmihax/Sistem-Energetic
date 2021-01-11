@@ -1,22 +1,25 @@
 package output;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import database.Database;
+import repository.Repo;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+public final class OutputWriter {
 
-public class OutputWriter {
-
-    public void writeOutput(Database Database,
-                            File outputFile) throws IOException {
+    /**
+     *
+     * @param repo to write from
+     * @param outputFile to write to
+     * @throws IOException in case of exception to writing
+     */
+    public void writeOutput(final Repo repo, final File outputFile) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(Database);
+        String json = objectMapper.writeValueAsString(repo);
         FileWriter fileWriter = new FileWriter(outputFile);
         fileWriter.write(json);
-        // System.out.println(json);
         fileWriter.close();
     }
 }

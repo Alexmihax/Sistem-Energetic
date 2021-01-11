@@ -1,24 +1,13 @@
 package entities;
 
-import common.Constants;
+import input.EntityInput;
 
-public class EntityFactory {
-    private EntityFactory instance = new EntityFactory();
-
-    public EntityFactory getInstance() {
-        return instance;
-    }
-
-//    public Entity getEntity(String entityType) {
-//        return switch (entityType) {
-//            case Constants.CONSUMERS -> {
-//                // return new Consumer();
-//            }
-//            case Constants.DISTRIBUTORS -> {
-//                // return new Distributor();
-//            }
-//            // default;
-//        };
-//        return null;
-//    }
+public interface EntityFactory<T> {
+    /**
+     *
+     * @param inputData for the entity constructor
+     * @param type of the entity
+     * @return an entity of the specified type
+     */
+    T create(EntityInput inputData, String type);
 }

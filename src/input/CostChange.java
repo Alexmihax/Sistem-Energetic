@@ -1,14 +1,17 @@
 package input;
 
-public class CostChange {
-    private final int id;
-    private final int infrastructureCost;
-    private final int productionCost;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public CostChange(int id, int infrastructureCost, int productionCost) {
-        this.id = id;
-        this.infrastructureCost = infrastructureCost;
-        this.productionCost = productionCost;
+public final class CostChange {
+    @JsonProperty("id")
+    private int id;
+    @JsonProperty("infrastructureCost")
+    private int infrastructureCost;
+    @JsonProperty("productionCost")
+    private int productionCost;
+
+    public CostChange() {
+
     }
 
     public int getId() {
@@ -22,5 +25,4 @@ public class CostChange {
     public int getProductionCost() {
         return productionCost;
     }
-
 }

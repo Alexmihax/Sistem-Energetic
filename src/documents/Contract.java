@@ -1,27 +1,32 @@
 package documents;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import entities.ConcreteDistributor;
 
 public final class Contract {
-    private int consumerId;
-    private int price;
+    private final int consumerId;
+    private final int price;
     private int remainedContractMonths;
-    private int distributorId;
+    private final ConcreteDistributor distributor;
 
-    public Contract(final int consumerId, final int distributorId,
+    public Contract(final int consumerId, final ConcreteDistributor distributor,
                     final int price, final int period) {
         this.consumerId = consumerId;
-        this.distributorId = distributorId;
+        this.distributor = distributor;
         this.price = price;
         this.remainedContractMonths = period;
     }
 
-    public Contract() {
-
+    /**
+     * Method to decrease the number of months remained in the contract
+     */
+    public void monthPassed() {
+        remainedContractMonths--;
     }
+
     @JsonIgnore
-    public int getDistributorId() {
-        return distributorId;
+    public ConcreteDistributor getDistributor() {
+        return distributor;
     }
 
     public int getConsumerId() {
@@ -30,13 +35,6 @@ public final class Contract {
 
     public int getPrice() {
         return price;
-    }
-
-    /**
-     *
-     */
-    public void monthPassed() {
-        remainedContractMonths--;
     }
 
     public int getRemainedContractMonths() {
