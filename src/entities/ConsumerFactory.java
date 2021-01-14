@@ -10,7 +10,7 @@ public final class ConsumerFactory implements EntityFactory<Consumer> {
         if (type == null || type.isEmpty()) {
             return null;
         }
-        if (type.equals(Constants.CONCRETECONSUMER)) {
+        if (type.equals(Constants.CONCRETE_CONSUMER)) {
             return new ConcreteConsumer(inputData.getId(), inputData.getBudget(),
                     inputData.getIncome());
         }

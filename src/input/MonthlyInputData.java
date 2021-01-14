@@ -1,24 +1,31 @@
 package input;
 
-import entities.Consumer;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class MonthlyInputData {
-    private final List<Consumer> newConsumers;
-    private final List<CostChange> costChanges;
+public final class MonthlyInputData {
+    @JsonProperty("newConsumers")
+    private List<EntityInput> newEntities;
+    @JsonProperty("distributorChanges")
+    private List<DistributorChanges> distributorChanges;
+    @JsonProperty("producerChanges")
+    private List<ProducerChanges> producerChanges;
 
-    public MonthlyInputData(List<Consumer> consumers, List<CostChange> costChange) {
-        this.newConsumers = consumers;
-        this.costChanges = costChange;
+
+    public MonthlyInputData() {
+
     }
 
-    public List<Consumer> getNewConsumers() {
-        return newConsumers;
+    public List<EntityInput> getNewConsumers() {
+        return newEntities;
     }
 
-    public List<CostChange> getCostChanges() {
-        return costChanges;
+    public List<DistributorChanges> getDistributorChanges() {
+        return distributorChanges;
+    }
+
+    public List<ProducerChanges> getProducerChanges() {
+        return producerChanges;
     }
 }

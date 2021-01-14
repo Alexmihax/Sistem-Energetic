@@ -4,6 +4,9 @@ import utils.Constants;
 
 public final class FactoryProvider {
 
+    /**
+     * for coding style
+     */
     private FactoryProvider() {
 
     }
@@ -27,11 +30,11 @@ public final class FactoryProvider {
         if (entity == null || entity.isEmpty()) {
             return null;
         }
-        if (entity.equals(Constants.CONSUMER)) {
-            return new ConsumerFactory();
-        } else if (entity.equals(Constants.DISTRIBUTOR)) {
-            return new DistributorFactory();
-        }
-        return null;
+        return switch (entity) {
+            case Constants.CONSUMER -> new ConsumerFactory();
+            case Constants.DISTRIBUTOR -> new DistributorFactory();
+            case Constants.PRODUCER -> new ProducerFactory();
+            default -> null;
+        };
     }
 }

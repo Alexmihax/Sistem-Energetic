@@ -6,12 +6,15 @@ public final class InputData {
     private final int numberOfTurns;
     private final List<EntityInput> consumers;
     private final List<EntityInput> distributors;
+    private final List<EntityInput> producers;
     private final List<MonthlyInputData> updates;
     public InputData(final int numberOfTurns, final List<EntityInput> consumers,
-                     final List<EntityInput> distributors, final  List<MonthlyInputData> updates) {
+                     final List<EntityInput> distributors, final List<EntityInput> producers,
+                     final List<MonthlyInputData> updates) {
         this.numberOfTurns = numberOfTurns;
         this.distributors = distributors;
         this.consumers = consumers;
+        this.producers = producers;
         this.updates = updates;
     }
 
@@ -25,6 +28,10 @@ public final class InputData {
 
     public List<EntityInput> getDistributors() {
         return distributors;
+    }
+
+    public List<EntityInput> getProducers() {
+        return producers;
     }
 
     public List<MonthlyInputData> getUpdates() {

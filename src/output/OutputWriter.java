@@ -17,8 +17,10 @@ public final class OutputWriter {
      */
     public void writeOutput(final Repo repo, final File outputFile) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(repo);
+         String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(repo);
+//        String json = objectMapper.writeValueAsString(repo);
         FileWriter fileWriter = new FileWriter(outputFile);
+//         System.out.println(json);
         fileWriter.write(json);
         fileWriter.close();
     }

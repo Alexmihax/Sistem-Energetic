@@ -10,10 +10,10 @@ public final class DistributorFactory implements EntityFactory<Distributor> {
         if (type == null || type.isEmpty()) {
             return null;
         }
-        if (type.equals(Constants.CONCRETEDISTRIBUTOR)) {
+        if (type.equals(Constants.CONCRETE_DISTRIBUTOR)) {
             return new ConcreteDistributor(inputData.getId(), inputData.getBudget(),
                     inputData.getContractLength(), inputData.getInfrastructureCost(),
-                    inputData.getProductionCost());
+                    inputData.getEnergyNeededKW(), inputData.getProducerStrategy());
         }
         return null;
     }

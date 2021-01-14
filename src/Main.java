@@ -16,7 +16,8 @@ public final class Main {
      * @throws Exception might error when reading/writing/opening files, parsing JSON
      */
     public static void main(final String[] args) throws Exception {
-        InputLoader inputLoader = new InputLoader(args[0]);
+         InputLoader inputLoader = new InputLoader(args[0]);
+//        InputLoader inputLoader = new InputLoader("checker/resources/in/basic_12.json");
         InputData inputData = inputLoader.readInitialData();
         GameSimulation game = GameSimulation.getInstance();
 
@@ -26,11 +27,15 @@ public final class Main {
 
         // Update
         for (int i = 0; i < inputData.getNumberOfTurns(); i++) {
-            game.update(inputData.getUpdates().get(i));
+            game.updateConsumers(inputData.getUpdates().get(i).getNewConsumers());
+            game.updateDistributors(inputData.getUpdates().get(i).getDistributorChanges());
             game.runRound();
+            game.updateProducers(inputData.getUpdates().get(i).getProducerChanges());
+            game.runEndOfRound(i + 1);
         }
 
         // Output
-        game.displayState(args[1]);
+         game.displayState(args[1]);
+//        game.displayState("results.out");
     }
 }

@@ -1,7 +1,8 @@
 package entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import utils.Constants;
+import strategies.EnergyChoiceStrategyType;
+import utils.Utils;
 
 public abstract class Distributor {
     private final int id;
@@ -10,24 +11,17 @@ public abstract class Distributor {
     private int contractLength;
     @JsonIgnore
     private int infrastructureCost;
-    @JsonIgnore
-    private int productionCost;
+    private int energyNeededKW;
+    private EnergyChoiceStrategyType producerStrategy;
     public Distributor(final int id, final int budget, final int contractLength,
-                               final int infrastructureCost, final int productionCost) {
+                       final int infrastructureCost, final int energyNeededKW,
+                       final String producerStrategy) {
         this.id = id;
         this.budget = budget;
         this.contractLength = contractLength;
         this.infrastructureCost = infrastructureCost;
-        this.productionCost = productionCost;
-    }
-
-    /**
-     *
-     * @return profit
-     */
-    @JsonIgnore
-    public int getProfit() {
-        return (int) Math.round(Math.floor(Constants.PROFIT * productionCost));
+        this.energyNeededKW = energyNeededKW;
+        this.producerStrategy = Utils.stringToEnergyChoiceStrategyType(producerStrategy);
     }
 
 
@@ -95,19 +89,31 @@ public abstract class Distributor {
         this.infrastructureCost = infrastructureCost;
     }
 
-    /**
-     *
-     * @return productionCost
-     */
-    public int getProductionCost() {
-        return productionCost;
+    public int getEnergyNeededKW() {
+        return energyNeededKW;
     }
 
-    /**
-     *
-     * @param productionCost new productionCost
-     */
-    public void setProductionCost(final int productionCost) {
-        this.productionCost = productionCost;
+    public void setEnergyNeededKW(int energyNeededKW) {
+        this.energyNeededKW = energyNeededKW;
+    }
+
+    public EnergyChoiceStrategyType getProducerStrategy() {
+        return producerStrategy;
+    }
+
+    public void setProducerStrategy(EnergyChoiceStrategyType producerStrategy) {
+        this.producerStrategy = producerStrategy;
+    }
+
+    @Override
+    public String toString() {
+        return "Distributor{" +
+                "id=" + id +
+                ", budget=" + budget +
+                ", contractLength=" + contractLength +
+                ", infrastructureCost=" + infrastructureCost +
+                ", energyNeededKW=" + energyNeededKW +
+                ", producerStrategy=" + producerStrategy +
+                '}';
     }
 }

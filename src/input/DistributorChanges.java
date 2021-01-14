@@ -2,15 +2,13 @@ package input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public final class CostChange {
+public final class DistributorChanges {
     @JsonProperty("id")
     private int id;
     @JsonProperty("infrastructureCost")
     private int infrastructureCost;
-    @JsonProperty("productionCost")
-    private int productionCost;
 
-    public CostChange() {
+    public DistributorChanges() {
 
     }
 
@@ -18,11 +16,15 @@ public final class CostChange {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getInfrastructureCost() {
         return infrastructureCost;
     }
 
-    public int getProductionCost() {
-        return productionCost;
+    public void setInfrastructureCost(int infrastructureCost) {
+        this.infrastructureCost = infrastructureCost;
     }
 }
