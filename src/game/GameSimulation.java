@@ -54,10 +54,6 @@ public final class GameSimulation extends Observable {
 
         for (ConcreteDistributor distributor : repo.getDistributors()) {
             if (!distributor.getIsBankrupt() && distributor.getProducerList().size() == 0) {
-                for (ConcreteProducer producer : distributor.getProducerList()) {
-                    producer.getDistributorList().remove(distributor);
-                }
-
                 EnergyChoiceStrategyFactory StrategyFactory = EnergyChoiceStrategyFactory.getInstance();
                 EnergyChoiceStrategy strategy = StrategyFactory.create(distributor.getProducerStrategy());
                 distributor.setProducerList(strategy.chooseProducers(repo.getEnergyProducers(),
@@ -106,6 +102,10 @@ public final class GameSimulation extends Observable {
         for (ConcreteDistributor distributor : repo.getDistributors()) {
             if (distributor.getBudget() < 0) {
                 distributor.setIsBankrupt();
+                for (ConcreteProducer producer : distributor.getProducerList()) {
+                    producer.getDistributorList().remove(distributor);
+                    producer.deleteObserver(distributor);
+                }
             } else {
                 distributor.monthlyPay();
             }
@@ -133,6 +133,7 @@ public final class GameSimulation extends Observable {
 
                 for (ConcreteProducer producer : distributor.getProducerList()) {
                     producer.getDistributorList().remove(distributor);
+                    producer.deleteObserver(distributor);
                 }
 
                 EnergyChoiceStrategyFactory StrategyFactory = EnergyChoiceStrategyFactory.getInstance();

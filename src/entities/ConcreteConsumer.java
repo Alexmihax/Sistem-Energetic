@@ -10,7 +10,6 @@ public final class ConcreteConsumer extends Consumer {
     private Contract contract = null;
     @JsonIgnore
     private int penalty = 0;
-
     public ConcreteConsumer(final int id, final int budget, final int income) {
         super(id, budget, income);
     }
@@ -19,10 +18,11 @@ public final class ConcreteConsumer extends Consumer {
      * Method that makes payment between consumer and distributor
      */
     public void payDistributor() {
-        int money = contract.getPrice() + penalty;
-        setBudget(getBudget() - money);
-        contract.getDistributor().getContractPayment(money);
-        penalty = 0;
+            int money = contract.getPrice() + penalty;
+            setBudget(getBudget() - money);
+            contract.getDistributor().getContractPayment(money);
+            penalty = 0;
+
     }
 
     /**

@@ -104,16 +104,4 @@ public abstract class Distributor {
     public void setProducerStrategy(EnergyChoiceStrategyType producerStrategy) {
         this.producerStrategy = producerStrategy;
     }
-
-    @Override
-    public String toString() {
-        return "Distributor{" +
-                "id=" + id +
-                ", budget=" + budget +
-                ", contractLength=" + contractLength +
-                ", infrastructureCost=" + infrastructureCost +
-                ", energyNeededKW=" + energyNeededKW +
-                ", producerStrategy=" + producerStrategy +
-                '}';
-    }
 }

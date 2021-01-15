@@ -38,16 +38,13 @@ public final class ConcreteDistributor extends Distributor implements Observer {
         return contractCost;
     }
 
-    public int computeContractCost() {
-
+    public void computeContractCost() {
         if (contracts.size() != 0) {
             contractCost = (int) Math.round(Math.floor((double) getInfrastructureCost() / contracts.size())
                     + getProductionCost() + getProfit());
-            return (int) Math.round(Math.floor((double) getInfrastructureCost() / contracts.size())
-                    + getProductionCost() + getProfit());
+        } else {
+            contractCost = getInfrastructureCost() + getProductionCost() + getProfit();
         }
-        contractCost = getInfrastructureCost() + getProductionCost() + getProfit();
-        return getInfrastructureCost() + getProductionCost() + getProfit();
     }
 
     /**
@@ -108,17 +105,5 @@ public final class ConcreteDistributor extends Distributor implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         needsUpdate = true;
-    }
-
-    @Override
-    public String toString() {
-        return super.toString() + "ConcreteDistributor{" +
-                "isBankrupt=" + isBankrupt +
-                ", contracts=" + contracts +
-                ", producerList=" + producerList +
-                ", contractCost=" + contractCost +
-                ", productionCost=" + productionCost +
-                ", needsUpdate=" + needsUpdate +
-                '}';
     }
 }

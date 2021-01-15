@@ -51,7 +51,7 @@ public final class ConcreteProducer extends Producer {
 
     public void addMonthlyStats(int month) {
         List<Integer> distributorsIds = distributorList.stream()
-                .map(Distributor::getId).collect(Collectors.toList());
+                .map(Distributor::getId).sorted().collect(Collectors.toList());
         monthlyStats.add(new Stats(month, distributorsIds));
     }
 }

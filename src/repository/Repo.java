@@ -55,7 +55,8 @@ public final class Repo {
             if (!distributor.getIsBankrupt()
                  && distributor.getBudget() > 0) {
                 distributor.computeProductionCost();
-                if (distributor.computeContractCost() < cheapestPrice) {
+                distributor.computeContractCost();
+                if (distributor.getContractCost() < cheapestPrice) {
                     cheapestPrice = distributor.getContractCost();
                     cheapestDistributor = distributor;
                 }

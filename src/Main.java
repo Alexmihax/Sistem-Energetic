@@ -17,7 +17,7 @@ public final class Main {
      */
     public static void main(final String[] args) throws Exception {
          InputLoader inputLoader = new InputLoader(args[0]);
-//        InputLoader inputLoader = new InputLoader("checker/resources/in/basic_12.json");
+//        InputLoader inputLoader = new InputLoader("checker/resources/in/complex_5.json");
         InputData inputData = inputLoader.readInitialData();
         GameSimulation game = GameSimulation.getInstance();
 
