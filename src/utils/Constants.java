@@ -19,6 +19,7 @@ public final class Constants {
     public static final String PRODUCER = "producer";
     public static final double PENALTY = 1.2;
     public static final double PROFIT = 0.2;
+    public static final double FACTOR = 10;
     public static final String GREEN = "GREEN";
     public static final String PRICE = "PRICE";
     public static final String QUANTITY = "QUANTITY";

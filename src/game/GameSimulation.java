@@ -2,18 +2,17 @@ package game;
 
 import documents.Contract;
 import entities.ConcreteConsumer;
-import entities.ConcreteDistributor;
-import entities.ConcreteProducer;
+import entities.Consumer;
+import entities.Distributor;
 import entities.EntityFactory;
 import entities.FactoryProvider;
+import entities.Producer;
 import input.DistributorChanges;
 import input.EntityInput;
 import input.InputData;
 import input.ProducerChanges;
 import output.OutputWriter;
 import repository.Repo;
-import strategies.EnergyChoiceStrategy;
-import strategies.EnergyChoiceStrategyFactory;
 import utils.Constants;
 
 import java.io.File;
@@ -33,59 +32,51 @@ public final class GameSimulation extends Observable {
         return instance;
     }
 
+    /**
+     * for coding style
+     */
     private GameSimulation() {
     }
 
     /**
-     *
+     * Method that initialises the database
      * @param inputData to put in repository
      */
     public void setup(final InputData inputData) {
         repo = new Repo(inputData);
     }
 
-
-
     /**
      * Method that executes the tasks for each round
      */
     public void runRound() {
-        //
-
-        for (ConcreteDistributor distributor : repo.getDistributors()) {
+        /* New Distributors choose their producers */
+        for (Distributor distributor : repo.getDistributors()) {
             if (!distributor.getIsBankrupt() && distributor.getProducerList().size() == 0) {
-                EnergyChoiceStrategyFactory StrategyFactory = EnergyChoiceStrategyFactory.getInstance();
-                EnergyChoiceStrategy strategy = StrategyFactory.create(distributor.getProducerStrategy());
-                distributor.setProducerList(strategy.chooseProducers(repo.getEnergyProducers(),
-                        distributor.getEnergyNeededKW()));
-                distributor.setNeedsUpdate(false);
-                distributor.computeProductionCost();
-                for (ConcreteProducer producer : distributor.getProducerList()) {
-                    producer.getDistributorList().add(distributor);
-                    producer.addObserver(distributor);
-                }
+                distributor.applyStrategy(repo.getEnergyProducers());
             }
         }
 
-        // Get the best offer from distributors
-        ConcreteDistributor cheapestDistributor = repo.getCheapestDistributor();
+        /* Get the best offer from distributors */
+        Distributor cheapestDistributor = repo.getCheapestDistributor();
         int cheapestPrice = cheapestDistributor.getContractCost();
 
-        for (ConcreteConsumer consumer : repo.getConsumers()) {
-            // Ignore bankrupt consumers
+        /* Consumers choose distributors and pay them */
+        for (Consumer consumer : repo.getConsumers()) {
+            /* Ignore bankrupt consumers */
             if (!consumer.getIsBankrupt()) {
-
+                /* Consumers get salary */
                 consumer.getMonthlyIncome();
 
-                // Delete ended contracts
+                /* Delete ended contracts */
                 if (consumer.getContract() != null
                         && consumer.getContract().getRemainedContractMonths() == 0) {
-                    ConcreteDistributor distributor = consumer.getContract().getDistributor();
+                    Distributor distributor = consumer.getContract().getDistributor();
                     distributor.getContracts().remove(consumer.getContract());
                     consumer.setContract(null);
                 }
 
-                // Create new Contracts
+                /* Create new Contracts */
                 if (consumer.getContract() == null) {
                     Contract newContract = new Contract(consumer.getId(),
                             cheapestDistributor,
@@ -94,31 +85,35 @@ public final class GameSimulation extends Observable {
                     cheapestDistributor.getContracts().add(newContract);
                 }
 
+                /* Pay the distributor */
                 consumer.monthlyPay();
             }
         }
 
-        // Distributor monthly pay
-        for (ConcreteDistributor distributor : repo.getDistributors()) {
+        /* Distributor monthly pay */
+        for (Distributor distributor : repo.getDistributors()) {
+            /* Check bankruptcy */
             if (distributor.getBudget() < 0) {
                 distributor.setIsBankrupt();
-                for (ConcreteProducer producer : distributor.getProducerList()) {
+                for (Producer producer : distributor.getProducerList()) {
                     producer.getDistributorList().remove(distributor);
                     producer.deleteObserver(distributor);
                 }
             } else {
+                /* Distributors pays the producers*/
                 distributor.monthlyPay();
             }
         }
 
-        for (ConcreteConsumer consumer : repo.getConsumers()) {
+        /* Update the contracts */
+        for (Consumer consumer : repo.getConsumers()) {
             if (consumer.getContract() != null) {
-                // Decrease months remaining in contracts
+                /* Decrease months remaining in contracts */
                 consumer.getContract().monthPassed();
 
-                // Delete the contract from the distributor
+                /* Delete the contract from the distributor */
                 if (consumer.getIsBankrupt() && consumer.getContract() != null) {
-                    ConcreteDistributor distributor = consumer.getContract().getDistributor();
+                    Distributor distributor = consumer.getContract().getDistributor();
                     distributor.getContracts().remove(consumer.getContract());
                     consumer.setContract(null);
                 }
@@ -126,38 +121,32 @@ public final class GameSimulation extends Observable {
         }
     }
 
+    /**
+     * Method that executes the tasks at the end of the round
+     * @param round the current month
+     */
     public void runEndOfRound(int round) {
-        // Distributors choose their producers
-        for (ConcreteDistributor distributor : repo.getDistributors()) {
+        /* Distributors choose their producers if the old producers updated */
+        for (Distributor distributor : repo.getDistributors()) {
             if (!distributor.getIsBankrupt() && distributor.getNeedsUpdate()) {
-
-                for (ConcreteProducer producer : distributor.getProducerList()) {
+                for (Producer producer : distributor.getProducerList()) {
                     producer.getDistributorList().remove(distributor);
                     producer.deleteObserver(distributor);
                 }
 
-                EnergyChoiceStrategyFactory StrategyFactory = EnergyChoiceStrategyFactory.getInstance();
-                EnergyChoiceStrategy strategy = StrategyFactory.create(distributor.getProducerStrategy());
-                distributor.setProducerList(strategy.chooseProducers(repo.getEnergyProducers(),
-                        distributor.getEnergyNeededKW()));
-                distributor.setNeedsUpdate(false);
-                distributor.computeProductionCost();
-                for (ConcreteProducer producer : distributor.getProducerList()) {
-                    producer.getDistributorList().add(distributor);
-                    producer.addObserver(distributor);
-                }
+                distributor.applyStrategy(repo.getEnergyProducers());
             }
         }
 
-        // Update producers for distributors
-        for (ConcreteProducer producer : repo.getEnergyProducers()) {
+        /* Update producers for distributors */
+        for (Producer producer : repo.getEnergyProducers()) {
             producer.addMonthlyStats(round);
         }
     }
 
     /**
-     *
-     * @param newConsumers
+     * Method that updates consumer lists in the database
+     * @param newConsumers to be added
      */
     public void updateConsumers(List<EntityInput> newConsumers) {
         FactoryProvider factoryProvider = FactoryProvider.getInstance();
@@ -170,12 +159,12 @@ public final class GameSimulation extends Observable {
     }
 
     /**
-     *
-     * @param distributorChanges
+     * Method that updates distributors in the database
+     * @param distributorChanges the updates
      */
     public void updateDistributors(List<DistributorChanges> distributorChanges) {
         for (DistributorChanges change : distributorChanges) {
-            ConcreteDistributor distributor = repo.getDistributors().get(change.getId());
+            Distributor distributor = repo.getDistributors().get(change.getId());
             if (!distributor.getIsBankrupt()) {
                 distributor.setInfrastructureCost(change.getInfrastructureCost());
             }
@@ -183,19 +172,19 @@ public final class GameSimulation extends Observable {
     }
 
     /**
-     *
-     * @param producerChanges
+     * Method that updates the producers in the database
+     * @param producerChanges the updates
      */
     public void updateProducers(List<ProducerChanges> producerChanges) {
         for (ProducerChanges change : producerChanges) {
-            ConcreteProducer producer = repo.getEnergyProducers().get(change.getId());
+            Producer producer = repo.getEnergyProducers().get(change.getId());
             producer.setEnergyPerDistributor(change.getEnergyPerDistributor());
             producer.updated();
         }
     }
 
     /**
-     *
+     * Method that displays the state of the game simulation
      * @param outputPath to write the result to
      * @throws IOException in case of exception to writing
      */

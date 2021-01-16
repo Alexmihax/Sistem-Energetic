@@ -37,29 +37,31 @@ public final class InputLoader {
         List<MonthlyInputData> updateList = new ArrayList<>();
         int numberOfTurns = 0;
         try {
-            // Parsing the contents of the JSON file
+            /* Parsing the contents of the JSON file */
             JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader(inputPath));
 
-            // Reading the number of turns
+            /* Reading the number of turns */
             numberOfTurns = ((Long) jsonObject.get(Constants.NUMBER_OF_TURNS)).intValue();
 
-            // Reading the update list
+            /* Reading the update list */
             JSONArray updatesDatabase = (JSONArray) jsonObject.get(Constants.MONTHLY_UPDATES);
             updateList = mapper.readValue(updatesDatabase.toString(),
                     new TypeReference<List<MonthlyInputData>>() { });
 
-            // Reading initial consumer, distributor and producers lists
+            /* Reading initial consumer list */
             JSONObject database = (JSONObject) jsonObject.get(Constants.INITIALDATA);
             JSONArray jsonConsumers = (JSONArray)
                     database.get(Constants.CONSUMERS);
             consumerInput = mapper.readValue(jsonConsumers.toString(),
                     new TypeReference<List<EntityInput>>() { });
 
+            /* Reading initial distributor list */
             JSONArray jsonDistributors = (JSONArray)
                     database.get(Constants.DISTRIBUTORS);
             distributorInput = mapper.readValue(jsonDistributors.toString(),
                     new TypeReference<List<EntityInput>>() { });
 
+            /* Reading initial producer list */
             JSONArray jsonProducers = (JSONArray)
                     database.get(Constants.PRODUCERS);
             producerInput = mapper.readValue(jsonProducers.toString(),
@@ -68,6 +70,7 @@ public final class InputLoader {
         } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
-        return new InputData(numberOfTurns, consumerInput, distributorInput, producerInput, updateList);
+        return new InputData(numberOfTurns, consumerInput,
+                distributorInput, producerInput, updateList);
     }
 }

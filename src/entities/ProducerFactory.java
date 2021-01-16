@@ -3,7 +3,7 @@ package entities;
 import input.EntityInput;
 import utils.Constants;
 
-public final class ProducerFactory implements EntityFactory<Producer>{
+public final class ProducerFactory implements EntityFactory<Producer> {
     @Override
     public Producer create(final EntityInput inputData, final String type) {
         if (type == null || type.isEmpty()) {

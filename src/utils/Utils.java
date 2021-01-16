@@ -3,7 +3,7 @@ package utils;
 import entities.EnergyType;
 import strategies.EnergyChoiceStrategyType;
 
-public class Utils {
+public final class Utils {
 
     /**
      * for coding style

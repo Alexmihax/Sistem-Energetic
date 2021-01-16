@@ -3,16 +3,15 @@ package entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public final class ConcreteProducer extends Producer {
 
-    public class Stats {
+    private final class Stats {
         private final int month;
-        private final List<Integer> distributorsIds;
+        private final ArrayList<Integer> distributorsIds;
 
-        public Stats(int month, List<Integer> distributorsIds) {
+        Stats(int month, ArrayList<Integer> distributorsIds) {
             this.month = month;
             this.distributorsIds = distributorsIds;
         }
@@ -21,38 +20,44 @@ public final class ConcreteProducer extends Producer {
             return month;
         }
 
-        public List<Integer> getDistributorsIds() {
+        public ArrayList<Integer> getDistributorsIds() {
             return distributorsIds;
         }
     }
 
     private final ArrayList<Stats> monthlyStats = new ArrayList<>();
-
     @JsonIgnore
     private final ArrayList<Distributor> distributorList = new ArrayList<>();
 
-    public ConcreteProducer(int id, String energyType, int maxDistributors, float priceKW, int energyPerDistributor) {
+    ConcreteProducer(int id, String energyType, int maxDistributors,
+                            float priceKW, int energyPerDistributor) {
         super(id, energyType, maxDistributors, priceKW, energyPerDistributor);
     }
 
-
+    /**
+     * Method for the Observer pattern
+     */
     public void updated() {
         setChanged();
         notifyObservers();
     }
 
-    public ArrayList<Stats> getMonthlyStats() {
-        return monthlyStats;
+    /**
+     * Method that registers the monthly stats
+     * @param month of the stats
+     */
+    public void addMonthlyStats(int month) {
+        ArrayList<Integer> distributorsIds = (ArrayList<Integer>) distributorList.stream()
+                .map(Distributor::getId).sorted().collect(Collectors.toList());
+        monthlyStats.add(new Stats(month, distributorsIds));
     }
 
     public ArrayList<Distributor> getDistributorList() {
         return distributorList;
     }
 
-    public void addMonthlyStats(int month) {
-        List<Integer> distributorsIds = distributorList.stream()
-                .map(Distributor::getId).sorted().collect(Collectors.toList());
-        monthlyStats.add(new Stats(month, distributorsIds));
+    public ArrayList<Stats> getMonthlyStats() {
+        return monthlyStats;
     }
 }
 

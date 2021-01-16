@@ -2,23 +2,25 @@ package entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import documents.Contract;
+import strategies.EnergyChoiceStrategy;
+import strategies.EnergyChoiceStrategyFactory;
 import utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
-import java.util.Observer;
 
-public final class ConcreteDistributor extends Distributor implements Observer {
+public final class ConcreteDistributor extends Distributor {
     private boolean isBankrupt = false;
     private final List<Contract> contracts = new ArrayList<>();
     @JsonIgnore
-    private ArrayList<ConcreteProducer> producerList = new ArrayList<>();
+    private ArrayList<Producer> producerList = new ArrayList<>();
     private int contractCost;
     @JsonIgnore
     private int productionCost;
     @JsonIgnore
     private boolean needsUpdate = true;
+
     public ConcreteDistributor(final int id, final int budget, final int contractLength,
                        final int infrastructureCost, final int energyNeededKW,
                        final String producerStrategy) {
@@ -27,35 +29,51 @@ public final class ConcreteDistributor extends Distributor implements Observer {
 
 
     /**
-     * Method that pays the infrastructure and production costs
+     * Method to apply the strategy for choosing new producers
+     * @param newProducerList with the new producers
      */
-    @JsonIgnore
-    public void monthlyPay() {
-        setBudget(getBudget() - getInfrastructureCost() - getProductionCost() * contracts.size());
-    }
-
-    public int getContractCost() {
-        return contractCost;
-    }
-
-    public void computeContractCost() {
-        if (contracts.size() != 0) {
-            contractCost = (int) Math.round(Math.floor((double) getInfrastructureCost() / contracts.size())
-                    + getProductionCost() + getProfit());
-        } else {
-            contractCost = getInfrastructureCost() + getProductionCost() + getProfit();
+    public void applyStrategy(ArrayList<Producer> newProducerList) {
+        EnergyChoiceStrategyFactory factory = EnergyChoiceStrategyFactory.getInstance();
+        EnergyChoiceStrategy strategy = factory.create(getProducerStrategy());
+        producerList =  strategy.chooseProducers(newProducerList,
+                getEnergyNeededKW());
+        needsUpdate = false;
+        computeProductionCost();
+        for (Producer producer : producerList) {
+            producer.getDistributorList().add(this);
+            producer.addObserver(this);
         }
     }
 
     /**
-     *
+     * Method to pay the energy producer
+     */
+    public void monthlyPay() {
+        setBudget(getBudget() - getInfrastructureCost() - productionCost * contracts.size());
+    }
+
+    /**
+     * Method to compute the contract cost
+     */
+    public void computeContractCost() {
+        if (contracts.size() != 0) {
+            contractCost = (int) Math.round(Math.floor((double) getInfrastructureCost()
+                    / contracts.size())
+                    + productionCost + getProfit());
+        } else {
+            contractCost = getInfrastructureCost() + productionCost + getProfit();
+        }
+    }
+
+    /**
+     * Method to compute the production cost
      */
     public void computeProductionCost() {
         float cost = 0;
         for (Producer producer : producerList) {
             cost += producer.getEnergyPerDistributor() * producer.getPriceKW();
         }
-        productionCost = (int) Math.round(Math.floor(cost / 10));
+        productionCost = (int) Math.round(Math.floor(cost / Constants.FACTOR));
     }
 
     /**
@@ -67,6 +85,14 @@ public final class ConcreteDistributor extends Distributor implements Observer {
         return (int) Math.round(Math.floor(Constants.PROFIT * productionCost));
     }
 
+    public int getContractCost() {
+        return contractCost;
+    }
+
+    public boolean getIsBankrupt() {
+        return isBankrupt;
+    }
+
     /**
      * Method that sets a Distributor to the bankrupt state
      */
@@ -74,32 +100,16 @@ public final class ConcreteDistributor extends Distributor implements Observer {
         isBankrupt = true;
     }
 
-    public boolean getIsBankrupt() {
-        return isBankrupt;
-    }
-
     public boolean getNeedsUpdate() {
         return needsUpdate;
-    }
-
-    public void setNeedsUpdate(boolean needsUpdate) {
-        this.needsUpdate = needsUpdate;
     }
 
     public List<Contract> getContracts() {
         return contracts;
     }
 
-    public int getProductionCost() {
-        return productionCost;
-    }
-
-    public ArrayList<ConcreteProducer> getProducerList() {
+    public ArrayList<Producer> getProducerList() {
         return producerList;
-    }
-
-    public void setProducerList(ArrayList<ConcreteProducer> producerList) {
-        this.producerList = producerList;
     }
 
     @Override

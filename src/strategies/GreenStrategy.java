@@ -1,34 +1,27 @@
 package strategies;
 
-import entities.ConcreteProducer;
+import entities.Producer;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import static java.util.Collections.reverseOrder;
 import static java.util.Comparator.comparingInt;
 
-public class GreenStrategy implements EnergyChoiceStrategy{
+public final class GreenStrategy implements EnergyChoiceStrategy {
     @Override
-    public ArrayList<ConcreteProducer> chooseProducers(final List<ConcreteProducer> producerList, final int energyQuantityNeeded) {
-        ArrayList<ConcreteProducer> answer = new ArrayList<>();
-        int energyQuantity = 0;
-        List<ConcreteProducer> sortedList = producerList.stream()
+    public ArrayList<Producer> chooseProducers(final List<Producer> producerList,
+                                               final int energyQuantityNeeded) {
+        List<Producer> sortedList = producerList.stream()
                 .sorted(Comparator
-                        .<ConcreteProducer,Boolean>comparing(p->p.getEnergyType().isRenewable(), Comparator.reverseOrder())
-                        .thenComparingDouble(ConcreteProducer::getPriceKW)
-                        .thenComparing(reverseOrder(comparingInt(ConcreteProducer::getEnergyPerDistributor))))
+                        .<Producer, Boolean>comparing(p -> p.getEnergyType().isRenewable(),
+                                Comparator.reverseOrder())
+                        .thenComparingDouble(Producer::getPriceKW)
+                        .thenComparing(reverseOrder(comparingInt(
+                                Producer::getEnergyPerDistributor))))
                 .collect(Collectors.toList());
-        for (ConcreteProducer producer : sortedList) {
-            if (producer.getMaxDistributors() > producer.getDistributorList().size()) {
-                answer.add(producer);
-                energyQuantity += producer.getEnergyPerDistributor();
-                if (energyQuantity > energyQuantityNeeded) {
-                    break;
-                }
-            }
-        }
-        return answer;
+        return chooseSortedProducers(energyQuantityNeeded, sortedList);
     }
 }

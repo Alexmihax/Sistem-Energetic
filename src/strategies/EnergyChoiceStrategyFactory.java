@@ -2,7 +2,7 @@ package strategies;
 
 import utils.Constants;
 
-public class EnergyChoiceStrategyFactory {
+public final class EnergyChoiceStrategyFactory {
 
     /**
      * for coding style
@@ -21,15 +21,20 @@ public class EnergyChoiceStrategyFactory {
         return instance;
     }
 
+    /**
+     *
+     * @param type of the strategy
+     * @return the specified strategy
+     */
     public EnergyChoiceStrategy create(EnergyChoiceStrategyType type) {
         if (type == null) {
             return null;
         }
-        return switch(type.label) {
+        return switch (type.getLabel()) {
             case (Constants.GREEN) -> new GreenStrategy();
             case (Constants.PRICE) -> new PriceStrategy();
             case (Constants.QUANTITY) -> new QuantityStrategy();
-            default->null;
+            default -> null;
         };
     }
 }
