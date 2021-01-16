@@ -34,7 +34,7 @@ public final class ConcreteConsumer extends Consumer {
         } else if (penalty > 0) {
             setIsBankrupt();
         } else {
-            setPenalty((int) Math.round(Math.floor(Constants.PENALTY * contract.getPrice())));
+            penalty = (int) Math.round(Math.floor(Constants.PENALTY * contract.getPrice()));
         }
     }
 
@@ -52,8 +52,8 @@ public final class ConcreteConsumer extends Consumer {
         isBankrupt = true;
     }
 
-    public void setPenalty(final int penalty) {
-        this.penalty = penalty;
+    public boolean getIsBankrupt() {
+        return isBankrupt;
     }
 
     public Contract getContract() {
@@ -62,10 +62,6 @@ public final class ConcreteConsumer extends Consumer {
 
     public void setContract(final Contract contract) {
         this.contract = contract;
-    }
-
-    public boolean getIsBankrupt() {
-        return isBankrupt;
     }
 
 }

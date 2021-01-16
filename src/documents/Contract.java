@@ -1,15 +1,15 @@
 package documents;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import entities.ConcreteDistributor;
+import entities.Distributor;
 
 public final class Contract {
     private final int consumerId;
     private final int price;
     private int remainedContractMonths;
-    private final ConcreteDistributor distributor;
+    private final Distributor distributor;
 
-    public Contract(final int consumerId, final ConcreteDistributor distributor,
+    public Contract(final int consumerId, final Distributor distributor,
                     final int price, final int period) {
         this.consumerId = consumerId;
         this.distributor = distributor;
@@ -25,7 +25,7 @@ public final class Contract {
     }
 
     @JsonIgnore
-    public ConcreteDistributor getDistributor() {
+    public Distributor getDistributor() {
         return distributor;
     }
 
@@ -40,14 +40,4 @@ public final class Contract {
     public int getRemainedContractMonths() {
         return remainedContractMonths;
     }
-
-//    @Override
-//    public String toString() {
-//        return "Contract{" +
-//                "consumerId=" + consumerId +
-//                ", price=" + price +
-//                ", remainedContractMonths=" + remainedContractMonths +
-//                ", distributor=" + distributor +
-//                '}';
-//    }
 }

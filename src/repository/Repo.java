@@ -1,44 +1,44 @@
 package repository;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import entities.ConcreteConsumer;
-import entities.ConcreteDistributor;
-import entities.ConcreteProducer;
+import entities.Consumer;
+import entities.Distributor;
 import entities.EntityFactory;
 import entities.FactoryProvider;
+import entities.Producer;
 import input.EntityInput;
 import input.InputData;
 import utils.Constants;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public final class Repo {
-    private final List<ConcreteConsumer> consumers = new ArrayList<>();
-    private final List<ConcreteDistributor> distributors = new ArrayList<>();
-    private final List<ConcreteProducer> energyProducers = new ArrayList<>();
+    private final ArrayList<Consumer> consumers = new ArrayList<>();
+    private final ArrayList<Distributor> distributors = new ArrayList<>();
+    private final ArrayList<Producer> energyProducers = new ArrayList<>();
 
 
     public Repo(final InputData input) {
+        /* */
         FactoryProvider factoryProvider = FactoryProvider.getInstance();
         EntityFactory<?> factory = factoryProvider.getFactory(Constants.CONSUMER);
         for (EntityInput entityInput : input.getConsumers()) {
-            consumers.add((ConcreteConsumer) factory.create(entityInput,
+            consumers.add((Consumer) factory.create(entityInput,
                     Constants.CONCRETE_CONSUMER));
         }
         factory = factoryProvider.getFactory(Constants.DISTRIBUTOR);
         for (EntityInput entityInput : input.getDistributors()) {
-            distributors.add((ConcreteDistributor) factory.create(entityInput,
+            distributors.add((Distributor) factory.create(entityInput,
                     Constants.CONCRETE_DISTRIBUTOR));
         }
         factory = factoryProvider.getFactory(Constants.PRODUCER);
         for (EntityInput entityInput : input.getProducers()) {
-            energyProducers.add((ConcreteProducer) factory.create(entityInput,
+            energyProducers.add((Producer) factory.create(entityInput,
                     Constants.CONCRETE_PRODUCER));
         }
     }
 
-    public List<ConcreteConsumer> getConsumers() {
+    public ArrayList<Consumer> getConsumers() {
         return consumers;
     }
 
@@ -48,10 +48,10 @@ public final class Repo {
      * @return a Distributor object
      */
     @JsonIgnore
-    public ConcreteDistributor getCheapestDistributor() {
+    public Distributor getCheapestDistributor() {
         int cheapestPrice = Integer.MAX_VALUE;
-        ConcreteDistributor cheapestDistributor = null;
-        for (ConcreteDistributor distributor : distributors) {
+        Distributor cheapestDistributor = null;
+        for (Distributor distributor : distributors) {
             if (!distributor.getIsBankrupt()
                  && distributor.getBudget() > 0) {
                 distributor.computeProductionCost();
@@ -65,11 +65,11 @@ public final class Repo {
         return cheapestDistributor;
     }
 
-    public List<ConcreteDistributor> getDistributors() {
+    public ArrayList<Distributor> getDistributors() {
         return distributors;
     }
 
-    public List<ConcreteProducer> getEnergyProducers() {
+    public ArrayList<Producer> getEnergyProducers() {
         return energyProducers;
     }
 }
