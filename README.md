@@ -33,7 +33,7 @@ Implementarea incepe cu citirea input-ului cu ajutorul claselor InputLoader,
 InputData, EntityInput, MonthlyInputData, CostChange. In clasa main se obtine
 instanta de GameSimulation, se executa initializarea bazei de date si se 
 parcurge runda initiala, dupa care se incepe parcurgerea rundelor, updatand
-baza de date inaintea inceperii fiecarei runde. La sfarsitul se va scrie in 
+baza de date inaintea inceperii fiecarei runde. La sfarsit se va scrie in 
 fisierul de iesire starea entitatilor la sfarsitul simularii, cu ajutorul
 clasei OutputWriter.
 
@@ -41,7 +41,7 @@ clasei OutputWriter.
 
 ### Entitati
 Au fost adaugate clasele ConcreteProducer si Producer, care se ocupa de operatiile
-pe care producatorii le au de facutlunar , iar clasa Stats se ocupa de datele 
+pe care producatorii le-au de facut lunar, iar clasa Stats se ocupa de datele 
 pe care acestia le retin lunar. Clasa Producer este folosita pentru abstractizarea 
 factory-urilor, astfel proiectul poate fi extins in cazul in care apar mai multe
 tipuri de producatori. ProducerFactory implementeaza interfata EntityFactory si
@@ -51,15 +51,15 @@ este clasa folosita pentru input-ul de update-uri lunare ale producatorilor.
 Clasele din package-ul strategies se ocupa de strategiile distribuitorilor de 
 alegere a producatorilor. Astfel, EnergyChoiceStrategyFactory este folosit pentru
 crearea strategiilor atunci cand trebuie facuta alegerea dintre GreenStrategy
-(priotate pentru energie renewable), PriceStrategy(prioritate pentru pret mai mic),
-QuantityStrategy(proritate pentru cantitate mai mare).
+(priotate pentru energie renewable), PriceStrategy (prioritate pentru pret mai mic),
+QuantityStrategy (proritate pentru cantitate mai mare).
 
 ### Flow
 Clasa Main se ocupa de controlarea flow-ului, iar in clasa GameSimulation este 
 implementatea logica simularii. Astfel, se citeste input-ul intr-o instanta 
 InputData folosind clasa InputLoader, iar acesta este trimis clasei de simulare
-pentru a initializa repository-ul cu date, dupa care se ruleaza task-urile rundei.
-Apoi in fiecare luna, se updateaza consumatorii si distribuitorii in baza
+pentru a initializa repository-ul cu date, dupa care se ruleaza task-urile rundei
+initiale. Apoi in fiecare luna, se updateaza consumatorii si distribuitorii in baza
 de date, se ruleaza task-urile rundei, se updateaza producatorii in baza de date,
 dupa care se ruleaza task-urile finalului de runda. Flow-ul rundei este urmatorul:
 * distribuitorii noi isi aleg producatorii
@@ -71,6 +71,9 @@ dupa care se ruleaza task-urile finalului de runda. Flow-ul rundei este urmatoru
 Flow-ul finalului rundei este urmatorul:
 * distribuitorii isi realeg producatorii daca e cazul
 * se salveaza datele lunare ale producatorilor
+
+La sfarsit se va scrie in fisierul de iesire starea entitatilor la sfarsitul simularii,
+cu ajutorul clasei OutputWriter, care preia datele din repository.
 
 ### Design patterns
 
